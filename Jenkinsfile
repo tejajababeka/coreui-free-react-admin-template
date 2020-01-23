@@ -3,6 +3,20 @@ node {
         stage('Checkout') {
 		checkout scm
         }
+		stage('Environment') {
+      		sh 'git --version'
+      		sh 'docker -v'
+      		sh 'printenv'
+    	}
+		stage('Build Docker test'){
+     		sh 'docker build -t react-test -f Dockerfile.test --no-cache .'
+    	}
+    	stage('Docker test'){
+      		sh 'docker run --rm react-test'
+    	}
+    	stage('Clean Docker test'){
+      		sh 'docker rmi react-test'
+    	}
         stage('Build') {
 			sh 'docker -v'
 			sh 'docker stop test || true && docker rm test || true'
